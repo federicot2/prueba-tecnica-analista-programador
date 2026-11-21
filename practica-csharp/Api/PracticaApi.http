@@ -1,0 +1,101 @@
+# Pruebas de la API. En VS Code instala la extension "REST Client" (humao.rest-client)
+# y haz clic en "Send Request" encima de cada peticion. Tambien sirve copiarlas a Postman.
+# Antes: levanta la API con  dotnet run  (en la carpeta Api).
+
+@host = http://localhost:5100
+
+###############################################################
+# EJEMPLOS (ya funcionan)
+###############################################################
+
+### Tema 16
+GET {{host}}/api/ejemplos/hola
+
+### Tema 17 - ruta
+GET {{host}}/api/ejemplos/doble/21
+
+### Tema 17 - query string
+GET {{host}}/api/ejemplos/repetir?texto=hola&veces=3
+
+### Tema 17 - body
+POST {{host}}/api/ejemplos/eco
+Content-Type: application/json
+
+{ "mensaje": "probando" }
+
+### Tema 18 - 200
+GET {{host}}/api/ejemplos/edad/20
+
+### Tema 18 - 400 (el :int de la ruta acepta negativos)
+GET {{host}}/api/ejemplos/edad/-3
+
+### Tema 21 - EF Core
+GET {{host}}/api/ejemplos/estaciones?provincia=Colón
+
+### Tema 21 - 404
+GET {{host}}/api/ejemplos/estaciones/99
+
+
+###############################################################
+# TUS EJERCICIOS (dan 404 hasta que los programes)
+###############################################################
+
+### Ejercicio 16  -> 200 {"mensaje":"Hola, Ana"}
+GET {{host}}/api/saludo/Ana
+
+### Ejercicio 17a -> 200 {"monto":100,"itbms":7.00,"total":107.00}
+GET {{host}}/api/calculadora/itbms?monto=100
+
+### Ejercicio 17b -> 200 {"resultado":6.5}
+POST {{host}}/api/calculadora/sumar
+Content-Type: application/json
+
+{ "a": 2.5, "b": 4 }
+
+### Ejercicio 18a -> 400 {"mensaje":"No se puede dividir entre 0"}
+GET {{host}}/api/calculadora/dividir?a=10&b=0
+
+### Ejercicio 18b -> 200 {"resultado":2.5}
+GET {{host}}/api/calculadora/dividir?a=10&b=4
+
+### Ejercicio 19  -> mandalo 2 veces y compara los ids
+GET {{host}}/api/di
+
+### Ejercicio 21a -> 200, 3 productos (Lubricante 20W-50, Aceite sintetico, Aditivo)
+GET {{host}}/api/productos?categoria=Lubricante
+
+### Ejercicio 21b -> 200, Lubricante 20W-50 1qt
+GET {{host}}/api/productos/5
+
+### Ejercicio 21c -> 404
+GET {{host}}/api/productos/99
+
+### Ejercicio 22  -> 200, 8 provincias. Primera: Panamá | 1715 | 94992.53
+GET {{host}}/api/reportes/ventas-por-provincia?anio=2026
+
+### Ejercicio 23a -> 201 Created (la primera vez)
+POST {{host}}/api/productos
+Content-Type: application/json
+
+{ "codigo": "TDA-HIELO", "nombre": "Bolsa de hielo", "categoria": "Tienda", "unidad": "Unidad", "precioUnitario": 2.5 }
+
+### Ejercicio 23b -> 409 Conflict (manda la 23a otra vez, mismo codigo)
+POST {{host}}/api/productos
+Content-Type: application/json
+
+{ "codigo": "TDA-HIELO", "nombre": "Otra bolsa", "categoria": "Tienda", "unidad": "Unidad", "precioUnitario": 2.5 }
+
+### Ejercicio 23c -> 400 (precio 0)
+POST {{host}}/api/productos
+Content-Type: application/json
+
+{ "codigo": "TDA-X", "nombre": "Producto X", "categoria": "Tienda", "unidad": "Unidad", "precioUnitario": 0 }
+
+### Ejercicio 23d -> 400 (sin nombre)
+POST {{host}}/api/productos
+Content-Type: application/json
+
+{ "codigo": "TDA-Y", "nombre": "", "categoria": "Tienda", "unidad": "Unidad", "precioUnitario": 1 }
+
+# AL TERMINAR EL 23, deja la base como estaba (en SSMS):
+#   DELETE FROM Productos WHERE Id > 9;
